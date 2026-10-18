@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/nohn3043-arch/Antares/schemas/audit-event.schema.json",
+  "title": "Antares AuditEvent",
+  "type": "object",
+  "required": [
+    "event_id",
+    "parent_event_ids",
+    "actor_node_id",
+    "actor_domain_id",
+    "event_type",
+    "observed_at",
+    "logical_clock",
+    "signature"
+  ],
+  "properties": {
+    "event_id": {
+      "type": "string",
+      "description": "Unique event identifier (UUID or domain-controlled URN)."
+    },
+    "parent_event_ids": {
+      "type": "array",
+      "items": {"type": "string"},
+      "maxItems": 8,
+      "description": "Direct declared causal predecessors. Ordering is not causality."
+    },
+    "actor_node_id": {"type": "string"},
+    "actor_domain_id": {"type": "string"},
+    "event_type": {"type": "string"},
+    "rule_id": {"type": "string"},
+    "rule_version": {"type": "string"},
+    "state_before_hash": {
+      "type": "string",
+      "pattern": "^sha256:"
+    },
+    "state_after_hash": {
+      "type": "string",
+      "pattern": "^sha256:"
+    },
+    "evidence_hash": {
+      "type": "string",
+      "pattern": "^sha256:"
+    },
+    "result_code": {"type": "string"},
+    "observed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "logical_clock": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "unresolved_parents": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Parents not present in the local log at add time."
+    },
+    "signature": {
+      "type": "string",
+      "description": "Hex-encoded Ed25519 signature over canonical CBOR bytes."
+    }
+  },
+  "additionalProperties": false
+}
