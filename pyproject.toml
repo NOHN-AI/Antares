@@ -1,50 +1,55 @@
 [build-system]
-requires = ["setuptools>=68.0", "wheel"]
+requires = ["setuptools>=68", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "gfsip"
-version = "1.1.0"
-description = "GFSIP v1.0 — Global Federation Stable Interoperability Protocol (Antares). Encrypted, multi-channel, recoverable cross-domain communication with causal audit and federation routing."
+name = "antares"
+version = "2.0.0"
+description = "Audit and federation message layer for AI agents (transport-independent)."
 readme = "README.md"
 requires-python = ">=3.9"
-license = {text = "Apache-2.0 — Apache License 2.0 (code). Specification and documentation: CC-BY 4.0. See LICENSE and LICENSE-SPEC.md."}
+license = "Apache-2.0"
 authors = [
-    {name = "NOHN AI", email = "ai@nohnlins.com"}
+    { name = "nohn3043-arch", email = "nohn3043@gmail.com" }
 ]
-keywords = ["gfsip", "antares", "federation", "protocol", "quic", "causal-audit", "agent-network", "distributed-systems", "interoperability"]
+keywords = [
+    "ai-agents",
+    "audit",
+    "federation",
+    "ed25519",
+    "cbor",
+    "a2a",
+    "mcp",
+]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
-    "Intended Audience :: Information Technology",
-    "Intended Audience :: Science/Research",
-    "License :: OSI Approved :: Apache Software License",
-    "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
-    "Programming Language :: Python :: 3.13",
-    "Topic :: Communications",
-    "Topic :: Internet",
-    "Topic :: Software Development :: Libraries :: Python Modules",
-    "Topic :: System :: Networking",
+    "Topic :: Security",
+    "Topic :: Software Development :: Libraries",
 ]
 dependencies = [
-    "cbor2>=5.4.0",
-    "cryptography>=42.0",
-    "aioquic>=1.0.0",
+    "cbor2>=5.4",
+    "cryptography>=41.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7",
+    "build>=1.0",
 ]
 
 [project.urls]
 Homepage = "https://github.com/nohn3043-arch/Antares"
-Documentation = "https://github.com/nohn3043-arch/Antares/blob/main/GFSIP_v1.0_protocol_spec.md"
 Repository = "https://github.com/nohn3043-arch/Antares"
+Issues = "https://github.com/nohn3043-arch/Antares/issues"
 
 [tool.setuptools.packages.find]
-where = ["reference-impl"]
-include = ["gfsip*"]
+where = ["src"]
 
 [tool.setuptools.package-data]
-gfsip = ["py.typed"]
+antares = ["py.typed"]
