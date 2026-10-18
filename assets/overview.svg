@@ -1,30 +1,91 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 560" preserveAspectRatio="xMidYMid meet" role="img" aria-label="overview">
-  <rect width="880" height="560" fill="#FAFAFA"/>
-<text x="440" y="56" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif" font-size="30" font-weight="600" fill="#2C2C2C" letter-spacing="1">Protocol Stack</text>
-<line x1="360" y1="78" x2="520" y2="78" stroke="#D4AF37" stroke-width="2"/>
-<rect x="28" y="110" width="256" height="168" rx="14" fill="#FFFFFF" stroke="#C9A96E" stroke-width="1.5"/>
-<circle cx="62" cy="148" r="9" fill="#D4AF37"/>
-<text x="82" y="154" font-family="Helvetica Neue, Arial, sans-serif" font-size="19" font-weight="600" fill="#2C2C2C">Session</text>
-<text x="48" y="226" font-family="Helvetica Neue, Arial, sans-serif" font-size="14" fill="#8B8B8B">会话管理、多通道复用</text>
-<rect x="308" y="110" width="256" height="168" rx="14" fill="#FFFFFF" stroke="#C9A96E" stroke-width="1.5"/>
-<circle cx="342" cy="148" r="9" fill="#D4AF37"/>
-<text x="362" y="154" font-family="Helvetica Neue, Arial, sans-serif" font-size="19" font-weight="600" fill="#2C2C2C">Idempotency</text>
-<text x="328" y="226" font-family="Helvetica Neue, Arial, sans-serif" font-size="14" fill="#8B8B8B">有限窗口幂等去重</text>
-<rect x="588" y="110" width="256" height="168" rx="14" fill="#FFFFFF" stroke="#C9A96E" stroke-width="1.5"/>
-<circle cx="622" cy="148" r="9" fill="#D4AF37"/>
-<text x="642" y="154" font-family="Helvetica Neue, Arial, sans-serif" font-size="19" font-weight="600" fill="#2C2C2C">Recovery</text>
-<text x="608" y="226" font-family="Helvetica Neue, Arial, sans-serif" font-size="14" fill="#8B8B8B">跨网络切换会话恢复</text>
-<rect x="28" y="306" width="256" height="168" rx="14" fill="#FFFFFF" stroke="#C9A96E" stroke-width="1.5"/>
-<circle cx="62" cy="344" r="9" fill="#D4AF37"/>
-<text x="82" y="350" font-family="Helvetica Neue, Arial, sans-serif" font-size="19" font-weight="600" fill="#2C2C2C">Audit</text>
-<text x="48" y="422" font-family="Helvetica Neue, Arial, sans-serif" font-size="14" fill="#8B8B8B">签名因果事件图审计</text>
-<rect x="308" y="306" width="256" height="168" rx="14" fill="#FFFFFF" stroke="#C9A96E" stroke-width="1.5"/>
-<circle cx="342" cy="344" r="9" fill="#D4AF37"/>
-<text x="362" y="350" font-family="Helvetica Neue, Arial, sans-serif" font-size="19" font-weight="600" fill="#2C2C2C">Federation</text>
-<text x="328" y="422" font-family="Helvetica Neue, Arial, sans-serif" font-size="14" fill="#8B8B8B">多信任锚跨域路由</text>
-<rect x="588" y="306" width="256" height="168" rx="14" fill="#FFFFFF" stroke="#C9A96E" stroke-width="1.5"/>
-<circle cx="622" cy="344" r="9" fill="#D4AF37"/>
-<text x="642" y="350" font-family="Helvetica Neue, Arial, sans-serif" font-size="19" font-weight="600" fill="#2C2C2C">Transport</text>
-<text x="608" y="422" font-family="Helvetica Neue, Arial, sans-serif" font-size="14" fill="#8B8B8B">QUIC / TLS1.3 回落</text>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720">
+  <style>
+    .lbl { font-family: 'Segoe UI', Helvetica, Arial, sans-serif; font-size: 20px; fill: #e8f1f8; }
+    .sub { font-family: 'Segoe UI', Helvetica, Arial, sans-serif; font-size: 15px; fill: #9bb8cc; }
+    .ttl { font-family: 'Segoe UI', Helvetica, Arial, sans-serif; font-size: 26px; font-weight: 700; fill: #0b1f3a; }
+    .cap { font-family: 'Segoe UI', Helvetica, Arial, sans-serif; font-size: 16px; fill: #5b7184; }
+  </style>
 
+  <rect width="1200" height="720" fill="#f4f8fb"/>
+
+  <!-- Layer 1: agents -->
+  <text x="60" y="50" class="ttl">Agent applications</text>
+  <g>
+    <rect x="60" y="70" width="320" height="90" rx="10" fill="#ffffff" stroke="#cfe0ec"/>
+    <text x="220" y="112" text-anchor="middle" class="lbl" fill="#0b1f3a">Planner / decision agents</text>
+    <text x="220" y="138" text-anchor="middle" class="sub">cross-org workflows</text>
+
+    <rect x="440" y="70" width="320" height="90" rx="10" fill="#ffffff" stroke="#cfe0ec"/>
+    <text x="600" y="112" text-anchor="middle" class="lbl" fill="#0b1f3a">Tool / MCP agents</text>
+    <text x="600" y="138" text-anchor="middle" class="sub">tools, resources, skills</text>
+
+    <rect x="820" y="70" width="320" height="90" rx="10" fill="#ffffff" stroke="#cfe0ec"/>
+    <text x="980" y="112" text-anchor="middle" class="lbl" fill="#0b1f3a">Companion agents</text>
+    <text x="980" y="138" text-anchor="middle" class="sub">long-lived personalities</text>
+  </g>
+
+  <!-- connectors -->
+  <g stroke="#9bb8cc" stroke-width="2" stroke-dasharray="6 5">
+    <line x1="220" y1="160" x2="220" y2="210"/>
+    <line x1="600" y1="160" x2="600" y2="210"/>
+    <line x1="980" y1="160" x2="980" y2="210"/>
+  </g>
+
+  <!-- Layer 2: Antares -->
+  <text x="60" y="200" class="ttl">Antares v2.0 — signed message layer</text>
+  <rect x="60" y="215" width="530" height="200" rx="12" fill="#0b1f3a"/>
+  <text x="325" y="262" text-anchor="middle" font-size="28" font-weight="700"
+        font-family="Segoe UI, Helvetica, Arial, sans-serif" fill="#22d3ee">Audit</text>
+  <text x="325" y="300" text-anchor="middle" class="sub">signed causal events</text>
+  <text x="325" y="328" text-anchor="middle" class="sub">cycle / parent-bound checks</text>
+  <text x="325" y="356" text-anchor="middle" class="sub">missing-parent tracking</text>
+  <text x="325" y="384" text-anchor="middle" class="sub">deterministic state hashes</text>
+
+  <rect x="610" y="215" width="530" height="200" rx="12" fill="#113a5c"/>
+  <text x="875" y="262" text-anchor="middle" font-size="28" font-weight="700"
+        font-family="Segoe UI, Helvetica, Arial, sans-serif" fill="#60a5fa">Federation</text>
+  <text x="875" y="300" text-anchor="middle" class="sub">signed domain descriptors</text>
+  <text x="875" y="328" text-anchor="middle" class="sub">Ed25519 trust anchors</text>
+  <text x="875" y="356" text-anchor="middle" class="sub">validity / version checks</text>
+  <text x="875" y="384" text-anchor="middle" class="sub">loop-free routing</text>
+
+  <!-- connectors -->
+  <g stroke="#9bb8cc" stroke-width="2" stroke-dasharray="6 5">
+    <line x1="325" y1="415" x2="325" y2="470"/>
+    <line x1="875" y1="415" x2="875" y2="470"/>
+  </g>
+
+  <!-- Layer 3: transports -->
+  <text x="60" y="460" class="ttl">Carriers (transport not defined by Antares)</text>
+  <g>
+    <rect x="60" y="480" width="190" height="80" rx="10" fill="#ffffff" stroke="#cfe0ec"/>
+    <text x="155" y="515" text-anchor="middle" class="lbl" fill="#0b1f3a">HTTP/3</text>
+    <text x="155" y="540" text-anchor="middle" class="sub">QUIC</text>
+
+    <rect x="270" y="480" width="190" height="80" rx="10" fill="#ffffff" stroke="#cfe0ec"/>
+    <text x="365" y="515" text-anchor="middle" class="lbl" fill="#0b1f3a">A2A</text>
+    <text x="365" y="540" text-anchor="middle" class="sub">agent RPC</text>
+
+    <rect x="480" y="480" width="190" height="80" rx="10" fill="#ffffff" stroke="#cfe0ec"/>
+    <text x="575" y="515" text-anchor="middle" class="lbl" fill="#0b1f3a">MCP</text>
+    <text x="575" y="540" text-anchor="middle" class="sub">tools / resources</text>
+
+    <rect x="690" y="480" width="190" height="80" rx="10" fill="#ffffff" stroke="#cfe0ec"/>
+    <text x="785" y="515" text-anchor="middle" class="lbl" fill="#0b1f3a">TCP + TLS</text>
+    <text x="785" y="540" text-anchor="middle" class="sub">enterprise networks</text>
+
+    <rect x="900" y="480" width="240" height="80" rx="10" fill="#ffffff" stroke="#cfe0ec"/>
+    <text x="1020" y="515" text-anchor="middle" class="lbl" fill="#0b1f3a">WebSockets</text>
+    <text x="1020" y="540" text-anchor="middle" class="sub">bidirectional</text>
+  </g>
+
+  <!-- note -->
+  <rect x="60" y="600" width="1080" height="80" rx="10" fill="#eaf4fb" stroke="#b9d6ea"/>
+  <text x="600" y="635" text-anchor="middle" class="cap">
+    A2A / MCP define how an agent is called; Antares provides non-repudiable
+    evidence and identity underneath those calls.
+  </text>
+  <text x="600" y="660" text-anchor="middle" class="cap">
+    Encoding: canonical CBOR · signatures: Ed25519 · transport: any authenticated channel
+  </text>
 </svg>
