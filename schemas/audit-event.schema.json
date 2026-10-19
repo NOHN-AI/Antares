@@ -1,64 +1,93 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://github.com/nohn3043-arch/Antares/schemas/audit-event.schema.json",
-  "title": "Antares AuditEvent",
+  "title": "Antares 2.1 audit.event envelope",
+  "description": "Signed envelope for an audit event. On the wire this is canonical CBOR; bytes fields are shown base64-encoded here for documentation only. The signature covers {v,m,c,k,a,b}.",
   "type": "object",
-  "required": [
-    "event_id",
-    "parent_event_ids",
-    "actor_node_id",
-    "actor_domain_id",
-    "event_type",
-    "observed_at",
-    "logical_clock",
-    "signature"
-  ],
+  "required": ["v", "m", "c", "k", "a", "b", "s"],
+  "additionalProperties": false,
   "properties": {
-    "event_id": {
+    "v": {"const": "2.1"},
+    "m": {"const": "audit.event"},
+    "c": {
       "type": "string",
-      "description": "Unique event identifier (UUID or domain-controlled URN)."
+      "contentEncoding": "base64",
+      "description": "Context bytes (session/conversation/task). Signed."
     },
-    "parent_event_ids": {
-      "type": "array",
-      "items": {"type": "string"},
-      "maxItems": 8,
-      "description": "Direct declared causal predecessors. Ordering is not causality."
-    },
-    "actor_node_id": {"type": "string"},
-    "actor_domain_id": {"type": "string"},
-    "event_type": {"type": "string"},
-    "rule_id": {"type": "string"},
-    "rule_version": {"type": "string"},
-    "state_before_hash": {
+    "k": {
       "type": "string",
-      "pattern": "^sha256:"
+      "description": "key_id of the producing key. Signed."
     },
-    "state_after_hash": {
+    "a": {
       "type": "string",
-      "pattern": "^sha256:"
+      "enum": ["ed25519", "ed25519+ml-dsa-65"],
+      "description": "Signature algorithm. Signed; no silent downgrade."
     },
-    "evidence_hash": {
+    "b": {
+      "type": "object",
+      "required": [
+        "eid", "par", "an", "ad", "typ", "rid", "rv", "sb", "sa",
+        "er", "en", "rc", "ob", "lc", "ur", "cr", "cs", "sl", "ts", "x"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "eid": {"type": "string", "description": "Unique event id (URN or UUID)."},
+        "par": {
+          "type": "array",
+          "items": {"type": "string"},
+          "maxItems": 8,
+          "description": "Declared direct parents; order is not causality."
+        },
+        "an": {"type": "string", "description": "Producing node id."},
+        "ad": {"type": "string", "description": "Producing domain id."},
+        "typ": {"type": "string", "description": "Operation family, e.g. order.ship."},
+        "rid": {"type": "string", "description": "Governing rule id (may be empty)."},
+        "rv": {"type": "string", "description": "Rule version (may be empty)."},
+        "sb": {"type": "string", "pattern": "^(sha256:[0-9a-f]{64})?$"},
+        "sa": {"type": "string", "pattern": "^(sha256:[0-9a-f]{64})?$"},
+        "er": {
+          "type": "string",
+          "pattern": "^(sha256:[0-9a-f]{64})?$",
+          "description": "Evidence Merkle root (spec §8.2)."
+        },
+        "en": {"type": "integer", "minimum": 0, "description": "Evidence chunk count."},
+        "rc": {"type": "string", "description": "Result code."},
+        "ob": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Self-asserted observation time; not verified time."
+        },
+        "lc": {"type": "integer", "minimum": 0, "description": "Node-local logical clock."},
+        "ur": {
+          "type": "array",
+          "items": {"type": "string"},
+          "description": "Parents missing at add time. Signed, so incompleteness cannot be denied."
+        },
+        "cr": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "description": "Cone root over known parents (spec §6.1)."
+        },
+        "cs": {"type": "integer", "minimum": 0, "description": "Number of ancestors committed by cr."},
+        "sl": {
+          "type": "object",
+          "additionalProperties": {"type": "string", "pattern": "^cmt:[0-9a-f]{64}$"},
+          "description": "Slot name -> salted commitment (spec §8.3)."
+        },
+        "ts": {
+          "type": "string",
+          "description": "Digest of an external timestamp token, or empty."
+        },
+        "x": {
+          "type": "object",
+          "description": "Extension map for profiles; canonical CBOR."
+        }
+      }
+    },
+    "s": {
       "type": "string",
-      "pattern": "^sha256:"
-    },
-    "result_code": {"type": "string"},
-    "observed_at": {
-      "type": "string",
-      "format": "date-time"
-    },
-    "logical_clock": {
-      "type": "integer",
-      "minimum": 0
-    },
-    "unresolved_parents": {
-      "type": "array",
-      "items": {"type": "string"},
-      "description": "Parents not present in the local log at add time."
-    },
-    "signature": {
-      "type": "string",
-      "description": "Hex-encoded Ed25519 signature over canonical CBOR bytes."
+      "pattern": "^[0-9a-f]+$",
+      "description": "hex(canonical_cbor({component: signature})) — spec §4.3."
     }
-  },
-  "additionalProperties": false
+  }
 }

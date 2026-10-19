@@ -1,95 +1,85 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://github.com/nohn3043-arch/Antares/schemas/domain-descriptor.schema.json",
-  "title": "Antares DomainDescriptor",
+  "title": "Antares 2.1 federation.descriptor envelope",
+  "description": "Signed envelope for a domain descriptor. CBOR on the wire; bytes shown base64 here for documentation.",
   "type": "object",
-  "required": [
-    "domain_id",
-    "descriptor_version",
-    "valid_from",
-    "valid_until",
-    "gateways",
-    "trust_anchors",
-    "signature_algorithm",
-    "signature"
-  ],
+  "required": ["v", "m", "c", "k", "a", "b", "s"],
+  "additionalProperties": false,
   "properties": {
-    "domain_id": {
-      "type": "string",
-      "pattern": "^urn:antares:domain:"
-    },
-    "descriptor_version": {
-      "type": "integer",
-      "minimum": 0,
-      "description": "Monotonically increasing per domain."
-    },
-    "valid_from": {
-      "type": "number",
-      "description": "Unix epoch seconds."
-    },
-    "valid_until": {
-      "type": "number",
-      "description": "Unix epoch seconds. Must be greater than valid_from."
-    },
-    "gateways": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "required": ["uri", "transport", "priority"],
-        "properties": {
-          "uri": {"type": "string"},
-          "transport": {
-            "type": "string",
-            "examples": ["http3", "a2a", "tcp+tls", "websocket"]
-          },
-          "priority": {
-            "type": "integer",
-            "minimum": 0,
-            "maximum": 255
-          },
-          "profiles": {
-            "type": "array",
-            "items": {"type": "string"}
+    "v": {"const": "2.1"},
+    "m": {"const": "federation.descriptor"},
+    "c": {"type": "string", "contentEncoding": "base64",
+          "description": "UTF-8 bytes of the domain id. Signed."},
+    "k": {"type": "string", "description": "Descriptor signing key id. Signed."},
+    "a": {"type": "string", "enum": ["ed25519", "ed25519+ml-dsa-65"]},
+    "b": {
+      "type": "object",
+      "required": ["dom", "dv", "vf", "vu", "gw", "sv", "ta", "rev"],
+      "additionalProperties": false,
+      "properties": {
+        "dom": {"type": "string", "pattern": "^urn:antares:domain:"},
+        "dv": {"type": "integer", "minimum": 0, "description": "Strictly increasing per domain."},
+        "vf": {"type": "number", "description": "valid_from, epoch seconds."},
+        "vu": {"type": "number", "description": "valid_until, epoch seconds."},
+        "gw": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["uri", "tr", "pr", "pf", "pop"],
+            "additionalProperties": false,
+            "properties": {
+              "uri": {"type": "string"},
+              "tr": {"type": "string", "examples": ["http3", "a2a", "tcp+tls", "websocket"]},
+              "pr": {"type": "integer", "minimum": 0, "maximum": 255,
+                     "description": "Priority; the smallest value wins."},
+              "pf": {"type": "array", "items": {"type": "string"}},
+              "pop": {
+                "description": "federation.gateway.pop envelope, or null when unproven.",
+                "oneOf": [{"type": "object"}, {"type": "null"}]
+              }
+            }
           }
         },
-        "additionalProperties": false
-      }
-    },
-    "services": {
-      "type": "array",
-      "items": {"type": "string"}
-    },
-    "trust_anchors": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "required": ["key_id", "algorithm", "public_key"],
-        "properties": {
-          "key_id": {"type": "string"},
-          "algorithm": {
-            "type": "string",
-            "enum": ["ed25519"]
-          },
-          "public_key": {
-            "type": "string",
-            "description": "Base64url-encoded raw 32-byte Ed25519 public key."
+        "sv": {"type": "array", "items": {"type": "string"}},
+        "ta": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["kid", "alg", "pk", "vf", "vu", "nx"],
+            "additionalProperties": false,
+            "properties": {
+              "kid": {"type": "string"},
+              "alg": {"type": "string", "enum": ["ed25519", "ed25519+ml-dsa-65"]},
+              "pk": {
+                "type": "object",
+                "additionalProperties": {"type": "string"},
+                "description": "{component: hex public key}."
+              },
+              "vf": {"type": "number"},
+              "vu": {"type": "number", "description": "0 means no expiry."},
+              "nx": {
+                "type": "string",
+                "description": "sha256: fingerprint of the successor key (rotation pre-commitment), or empty."
+              }
+            }
           }
         },
-        "additionalProperties": false
+        "rev": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["kid", "at", "rs"],
+            "additionalProperties": false,
+            "properties": {
+              "kid": {"type": "string"},
+              "at": {"type": "number", "description": "Revocation time, epoch seconds."},
+              "rs": {"type": "string", "description": "Reason."}
+            }
+          }
+        }
       }
     },
-    "revocation_endpoints": {
-      "type": "array",
-      "items": {"type": "string"}
-    },
-    "signature_algorithm": {
-      "type": "string",
-      "enum": ["ed25519"]
-    },
-    "signature": {
-      "type": "string",
-      "description": "Hex-encoded Ed25519 signature over canonical CBOR bytes."
-    }
-  },
-  "additionalProperties": false
+    "s": {"type": "string", "pattern": "^[0-9a-f]+$"}
+  }
 }
